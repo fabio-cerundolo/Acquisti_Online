@@ -12,6 +12,9 @@ public class Cliente {
         this.cognome=cognome;
     }
 
+    public Cliente() {
+    }
+
     public int getId() {
         return id;
     }
@@ -22,5 +25,11 @@ public class Cliente {
 
     public String getCognome() {
         return cognome;
+    }
+
+    public void setCognome(String string) {
+    }
+
+    public void setNome(String string) {
     }
 }
