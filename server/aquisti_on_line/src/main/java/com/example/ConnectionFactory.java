@@ -8,7 +8,7 @@ public class ConnectionFactory {
 	Connection conn = null;
 	
 	String driverClassName = "com.mysql.cj.jdbc.Driver";
-	String connectionUrl = "jdbc:mysql://localhost:3306/corsosql?serverTimezone=UTC";
+	String connectionUrl = "jdbc:mysql://localhost:3306/acquistionline?serverTimezone=UTC";
 	String dbUser = "root";
 	String dbPwd = ""; 
 
