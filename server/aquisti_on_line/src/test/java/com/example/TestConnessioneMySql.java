@@ -1,9 +1,9 @@
-package server.connection;
+package com.example;
 
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 public class TestConnessioneMySql {
 	final static String dataBaseType = "MYSQL";            				// Tipologia database MSACCESS/MYSQL
