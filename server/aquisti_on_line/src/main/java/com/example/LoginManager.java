@@ -22,10 +22,13 @@ public class LoginManager {
         }
     }
 
-    public int login(String username) {
+    public int login(Scanner scanner) {
+        System.out.print("Inserisci l'ID del cliente: ");
+        int clientId = scanner.nextInt();
+        
         String selectQuery = "SELECT id_cliente FROM clienti WHERE id_cliente = ?";
         try (PreparedStatement statement = connection.prepareStatement(selectQuery)) {
-            statement.setString(1, username);
+            statement.setInt(1, clientId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt("id_cliente");
@@ -63,21 +66,4 @@ public class LoginManager {
         }
     }
 
-    public static void main(String[] args) {
-        LoginManager loginManager = new LoginManager();
-
-        // Effettua il login
-        Scanner rd = new Scanner(System.in);
-        System.out.println("Inserire il tuo id caro cliente.");
-        int clientId = rd.nextInt();
-        if (clientId != -1) {
-            String fullName = loginManager.getFullName(clientId);
-            System.out.println("Benvenuto, " + fullName);
-        } else {
-            System.out.println("Credenziali errate.");
-        }
-
-        // Chiudi la connessione al database
-        loginManager.close();
-    }
 }
