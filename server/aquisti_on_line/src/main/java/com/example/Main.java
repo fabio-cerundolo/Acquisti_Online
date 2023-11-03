@@ -25,11 +25,17 @@ public class Main {
             if (!products.isEmpty()) {
                 System.out.println("Prodotti disponibili:");
                 for (Prodotto prodotto : products) {
-                    System.out.println("ID: " + prodotto.getIdProdotto() + " | "
-                        + "Nome: " + prodotto.getNomeProdotto() + " | "
-                        + prodotto.getPrezzoProdotto()+"$ | "
-                        + "Quantità: "+prodotto.getQuantitaProdotto()+ " | "
-                        + "Descrizione:"+prodotto.getDescrizioneProdotto() );
+                    // System.out.println("ID: " + prodotto.getIdProdotto() + " | "
+                    //     + "Nome: " + prodotto.getNomeProdotto() + " | "
+                    //     + prodotto.getPrezzoProdotto()+"$ | "
+                    //     + "Quantità: "+prodotto.getQuantitaProdotto()+ " | "
+                    //     + "Descrizione:"+prodotto.getDescrizioneProdotto() );
+                    System.out.format("-%8s %-20s %-10s %-15s %-20s",  "ID: "+ prodotto.getIdProdotto(),
+                        "| Nome: " + prodotto.getNomeProdotto(),
+                        "| "+ prodotto.getPrezzoProdotto()+"$ ",
+                        "| Quantità: "+prodotto.getQuantitaProdotto(),
+                        "| Descrizione:"+prodotto.getDescrizioneProdotto() );
+                    System.out.println();
                 }
                 System.out.print("Inserisci l'ID del prodotto da aggiungere al carrello: ");
                 int selectedProductId = scanner.nextInt();
