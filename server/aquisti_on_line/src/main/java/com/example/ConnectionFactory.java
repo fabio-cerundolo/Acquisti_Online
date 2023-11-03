@@ -8,13 +8,13 @@ public class ConnectionFactory {
 	Connection conn = null;
 	
 	String driverClassName = "com.mysql.cj.jdbc.Driver";
-	String connectionUrl = "jdbc:mysql://localhost:3306/acquistionline?serverTimezone=UTC";
+	String connectionUrl = "jdbc:mysql://localhost:3306/acquistionline?autoReconnect=true&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	String dbUser = "root";
-	String dbPwd = "root"; 
+	String dbPwd = ""; 
 
 	private static ConnectionFactory connectionFactory = null;
 
-	private ConnectionFactory() throws ClassNotFoundException {
+	ConnectionFactory() throws ClassNotFoundException {
 		try {
 			Class.forName(driverClassName);
 		} catch (ClassNotFoundException e) {
