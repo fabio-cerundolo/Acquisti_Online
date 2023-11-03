@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package com.example;
 
 import java.sql.Connection;
@@ -90,7 +88,7 @@ public class AcquistiDAO implements IDao<Cliente>  {
 			stmt.setInt(1, t.getId());
 			resultSet = stmt.executeQuery();
 
-			// SchedaPersona non trovata, 0 righe restituite
+			// Cliente non trovat0, 0 righe restituite
 			if (!resultSet.next()) {
 				return null;
 			}
