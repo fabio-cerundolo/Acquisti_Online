@@ -25,7 +25,7 @@ public class CarrelloAquisti implements Acquisti {
 		
 		conn = cf.getConnection();
 		acquistiDAO = new AcquistiDAO();
-		acquistiDAO.setConnection(conn);	
+		acquistiDAO.getConnection(conn);	
 		
 		isCreated = acquistiDAO.create(s);
 		conn.commit();
