@@ -25,11 +25,11 @@ public class Main {
             if (!products.isEmpty()) {
                 System.out.println("Prodotti disponibili:");
                 for (Prodotto prodotto : products) {
-                    System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
-                    System.out.println("Nome: " + prodotto.getNomeProdotto());
-                    System.out.println("Prezzo: " + prodotto.getPrezzoProdotto());
-                    System.out.println("Quantità: "+prodotto.getQuantitaProdotto());
-                    System.out.println("Descrizione:"+prodotto.getDescrizioneProdotto());
+                    System.out.println("ID: " + prodotto.getIdProdotto() + " | "
+                        + "Nome: " + prodotto.getNomeProdotto() + " | "
+                        + prodotto.getPrezzoProdotto()+"$ | "
+                        + "Quantità: "+prodotto.getQuantitaProdotto()+ " | "
+                        + "Descrizione:"+prodotto.getDescrizioneProdotto() );
                 }
             } else {
                 System.out.println("Nessun prodotto disponibile.");
