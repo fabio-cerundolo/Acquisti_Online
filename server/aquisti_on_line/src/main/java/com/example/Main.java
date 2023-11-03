@@ -1,5 +1,6 @@
 package com.example;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,9 +24,9 @@ public class Main {
             if (!products.isEmpty()) {
                 System.out.println("Prodotti disponibili:");
                 for (Prodotto prodotto : products) {
-                    System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
-                    System.out.println("Nome: " + prodotto.getNomeProdotto());
-                    System.out.println("Prezzo: " + prodotto.getPrezzoProdotto());
+                    System.out.printf("%-10s %-20s %-15s", "ID: " + prodotto.getIdProdotto(),
+                    "|  Nome: " + prodotto.getNomeProdotto(),
+                    "|  Prezzo: " + prodotto.getPrezzoProdotto());
                     System.out.println();
                 }
 
@@ -45,7 +46,7 @@ public class Main {
 
                         if (selectedProduct != null) {
                             carrello.aggiungiProdotto(selectedProduct);
-                            System.out.println("Prodotto aggiunto al carrello.");
+                            System.out.println("Prodotto " + selectedProduct.toString() + " aggiunto al carrello.");
                         } else {
                             System.out.println("Prodotto non trovato.");
                         }
