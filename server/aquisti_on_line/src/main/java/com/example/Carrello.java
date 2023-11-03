@@ -9,6 +9,10 @@ public class Carrello {
     private String clienteCognome;
     private String tipoPagamento;
 
+    public void setTipoPagamento(String tipoPagamento) {
+        this.tipoPagamento = tipoPagamento;
+    }
+
     public Carrello(String tipoPagamento) {
         selectedProducts = new ArrayList<>();
         this.tipoPagamento = tipoPagamento;

@@ -1,12 +1,11 @@
 package com.example;
 
-import java.util.Scanner;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         AcquistiDAO acquistiDAO = new AcquistiDAO();
-
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Benvenuto nel sistema di gestione acquisti online!");
@@ -19,60 +18,57 @@ public class Main {
         if (!fullName.equals("Nome Cognome") && !fullName.equals("Errore")) {
             System.out.println("Nome del cliente: " + fullName);
 
-            // Retrieve and display all products
             List<Prodotto> products = acquistiDAO.getAllProducts();
 
             if (!products.isEmpty()) {
                 System.out.println("Prodotti disponibili:");
                 for (Prodotto prodotto : products) {
-                    // System.out.println("ID: " + prodotto.getIdProdotto() + " | "
-                    //     + "Nome: " + prodotto.getNomeProdotto() + " | "
-                    //     + prodotto.getPrezzoProdotto()+"$ | "
-                    //     + "Quantità: "+prodotto.getQuantitaProdotto()+ " | "
-                    //     + "Descrizione:"+prodotto.getDescrizioneProdotto() );
-                    System.out.format("-%8s %-20s %-10s %-15s %-20s",  "ID: "+ prodotto.getIdProdotto(),
-                        "| Nome: " + prodotto.getNomeProdotto(),
-                        "| "+ prodotto.getPrezzoProdotto()+"$ ",
-                        "| Quantità: "+prodotto.getQuantitaProdotto(),
-                        "| Descrizione:"+prodotto.getDescrizioneProdotto() );
+                    System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
+                    System.out.println("Nome: " + prodotto.getNomeProdotto());
+                    System.out.println("Prezzo: " + prodotto.getPrezzoProdotto());
                     System.out.println();
                 }
-                System.out.print("Inserisci l'ID del prodotto da aggiungere al carrello: ");
-                int selectedProductId = scanner.nextInt();
 
-                // Find the selected product by ID
-                Prodotto selectedProduct = null;
-                for (Prodotto prodotto : products) {
-                    if (prodotto.getIdProdotto() == selectedProductId) {
-                        selectedProduct = prodotto;
-                        break;
+                Carrello carrello = new Carrello(fullName);
+
+                boolean addToCart = true;
+
+                while (addToCart) {
+                    System.out.print("Inserisci l'ID del prodotto da aggiungere al carrello (oppure 'P' per procedere al pagamento): ");
+                    String userInput = scanner.next();
+
+                    if (userInput.equalsIgnoreCase("P")) {
+                        addToCart = false;
+                    } else {
+                        int selectedProductId = Integer.parseInt(userInput);
+                        Prodotto selectedProduct = findProductById(products, selectedProductId);
+
+                        if (selectedProduct != null) {
+                            carrello.aggiungiProdotto(selectedProduct);
+                            System.out.println("Prodotto aggiunto al carrello.");
+                        } else {
+                            System.out.println("Prodotto non trovato.");
+                        }
                     }
                 }
-
-                if (selectedProduct != null) {
-                    System.out.println("Prodotto aggiunto al carrello.");
-
-                    // Get additional information for the cart
-                    System.out.print("Tipo di pagamento: ");
-                    String tipoPagamento = scanner.next();
-
-                    // Create a shopping cart and add the selected product
-                    Carrello carrello = new Carrello(fullName);
-                    carrello.aggiungiProdotto(selectedProduct);
-
-                    // Display the products in the cart
-                    System.out.println("Prodotti nel carrello di " + carrello.getClienteNome() + " " + carrello.getClienteCognome() + ":");
-                    for (Prodotto prodotto : carrello.getProdottiNelCarrello()) {
-                        System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
-                        System.out.println("Nome: " + prodotto.getNomeProdotto());
-                        System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
-                        System.out.println("Tipo di pagamento: "+tipoPagamento);
-                        System.out.println("Totale: " + prodotto.getPrezzoProdotto());
-                        System.out.println();
-                    }
-                } else {
-                    System.out.println("Prodotto non trovato.");
+// Prompt the user to enter the payment type
+                        System.out.print("Inserisci il tipo di pagamento: ");
+                        String tipoPagamento = scanner.next();
+                        carrello.setTipoPagamento(tipoPagamento);
+                // Display the products in the cart and calculate the total
+                double total = 0.0;
+                System.out.println("Prodotti nel carrello di " + fullName + ":");
+                for (Prodotto prodotto : carrello.getProdottiNelCarrello()) {
+                    System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
+                    System.out.println("Nome: " + prodotto.getNomeProdotto());
+                    System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
+                    System.out.println("Tipo di pagamento: " + carrello.getTipoPagamento());
+                    double prezzoProdotto = prodotto.getPrezzoProdotto();
+                    System.out.println("Totale parziale: " + prezzoProdotto);
+                    System.out.println();
+                    total += prezzoProdotto;
                 }
+                System.out.println("Totale: " + total + " " + carrello.getTipoPagamento());
             } else {
                 System.out.println("Nessun prodotto disponibile.");
             }
@@ -80,8 +76,16 @@ public class Main {
             System.out.println("Cliente non trovato.");
         }
 
-
         acquistiDAO.close();
         scanner.close();
+    }
+
+    private static Prodotto findProductById(List<Prodotto> products, int productId) {
+        for (Prodotto prodotto : products) {
+            if (prodotto.getIdProdotto() == productId) {
+                return prodotto;
+            }
+        }
+        return null;
     }
 }
