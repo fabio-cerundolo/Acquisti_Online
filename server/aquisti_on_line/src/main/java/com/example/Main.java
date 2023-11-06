@@ -6,6 +6,7 @@ import java.util.Stack;
 
 public class Main {
     public static void main(String[] args) {
+
         AcquistiDAO acquistiDAO = new AcquistiDAO();
         Scanner scanner = new Scanner(System.in);
 
@@ -61,16 +62,16 @@ public class Main {
 }
 
 abstract class Menu {
-    protected static String title;
-    protected static List<String> options;
+    protected String title;
+    protected List<String> options;
     protected Scanner scanner;
     protected Carrello cart;
+
     public Menu(Scanner scanner, String title, List<String> options) {
-        Menu.title = title;
-        Menu.options = options;
+        this.title = title;
+        this.options = options;
         this.scanner = scanner;
         this.cart = new Carrello(title);
-        this.scanner = scanner;
     }
 
     public int displayMenuAndGetChoice() {
@@ -91,9 +92,9 @@ class MainMenu extends Menu {
 
     public MainMenu(Scanner scanner, List<Prodotto> products) {
         super(scanner, "Menu Principale", List.of(
-            "Visualizza Prodotti",
-            "Carrello",
-            "Effettua Pagamento"
+                "Visualizza Prodotti",
+                "Carrello",
+                "Effettua Pagamento"
         ));
         this.products = products;
     }
@@ -108,12 +109,8 @@ class MainMenu extends Menu {
                 CartMenu cartMenu = new CartMenu(scanner, fullName, cart, products);
                 menuStack.push(cartMenu);
                 break;
-
-
-
-                
             case 3:
-                menuStack.push(new PaymentMenu(scanner, fullName));
+                menuStack.push(new PaymentMenu(scanner, fullName, cart));
                 break;
             default:
                 System.out.println("Scelta non valida. Riprova.");
@@ -126,7 +123,7 @@ class ProductsMenu extends Menu {
     private List<Prodotto> products;
 
     public ProductsMenu(Scanner scanner, List<Prodotto> products) {
-        super(scanner, title, options);
+        super(scanner, "Visualizza Prodotti", List.of("Torna indietro"));
         this.products = products;
     }
 
@@ -149,28 +146,17 @@ class ProductsMenu extends Menu {
         if (choice == 0) {
             // Torna indietro al menu principale
             menuStack.pop();
-        } else if (choice > 0 && choice <= this.products.size()) {
-            // L'utente ha selezionato un prodotto
-            Prodotto selectedProduct = products.get(choice - 1);
-
-            // Esempio: aggiungi il prodotto al carrello
-            cart.aggiungiProdotto(selectedProduct);
-            System.out.println("Prodotto aggiunto al carrello.");
         } else {
             System.out.println("Scelta non valida. Riprova.");
         }
     }
 }
 
-
-
-
-
 class CartMenu extends Menu {
     public CartMenu(Scanner scanner, String fullName, Carrello cart, List<Prodotto> products) {
         super(scanner, "Carrello di " + fullName, List.of(
-            "Visualizza Carrello",
-            "Aggiungi Prodotto al Carrello"
+                "Visualizza Carrello",
+                "Aggiungi Prodotto al Carrello"
         ));
         this.cart = cart;
     }
@@ -179,30 +165,29 @@ class CartMenu extends Menu {
     public void handleChoice(int choice, Stack<Menu> menuStack, List<Prodotto> products, String fullName) {
         switch (choice) {
             case 1:
-    // Implementa la logica per visualizzare il contenuto del carrello
-    List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello();
+                // Implementa la logica per visualizzare il contenuto del carrello
+                List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello();
 
-    if (prodottiNelCarrello.isEmpty()) {
-        System.out.println("Il carrello è vuoto.");
-    } else {
-        System.out.println("Prodotti nel carrello di " + fullName + ":");
-        for (Prodotto prodotto : prodottiNelCarrello) {
-            System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
-            System.out.println("Nome: " + prodotto.getNomeProdotto());
-            System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
-            System.out.println("Tipo di pagamento: " + cart.getTipoPagamento());
-            double prezzoProdotto = prodotto.getPrezzoProdotto();
-            System.out.println("Totale parziale: " + prezzoProdotto);
-            System.out.println();
-        }
-    }
-    break;
+                if (prodottiNelCarrello.isEmpty()) {
+                    System.out.println("Il carrello è vuoto.");
+                } else {
+                    System.out.println("Prodotti nel carrello di " + fullName + ":");
+                    for (Prodotto prodotto : prodottiNelCarrello) {
+                        System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
+                        System.out.println("Nome: " + prodotto.getNomeProdotto());
+                        System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
+                        System.out.println("Tipo di pagamento: " + cart.getTipoPagamento());
+                        double prezzoProdotto = prodotto.getPrezzoProdotto();
+                        System.out.println("Totale parziale: " + prezzoProdotto);
+                        System.out.println();
+                    }
+                }
+                break;
 
             case 2:
                 // Implementa la logica per aggiungere prodotti al carrello
                 System.out.print("Inserisci l'ID del prodotto da aggiungere al carrello: ");
-                displayProducts(products);
-                int selectedProductId = scanner.nextInt();
+                int selectedProductId = scanner.nextInt(); // Ottieni la scelta dell'utente
                 Prodotto selectedProduct = findProductById(products, selectedProductId);
 
                 if (selectedProduct != null) {
@@ -212,22 +197,15 @@ class CartMenu extends Menu {
                     System.out.println("Prodotto non trovato.");
                 }
                 break;
+
             case 0:
-                // Torna indietro al menu precedente (MainMenu)
+                // Torna al Menu Principale
                 menuStack.pop();
                 break;
+
             default:
                 System.out.println("Scelta non valida. Riprova.");
                 break;
-        }
-    }
-        private void displayProducts(List<Prodotto> products) {
-        System.out.println("Prodotti disponibili:");
-        for (Prodotto prodotto : products) {
-            System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
-            System.out.println("Nome: " + prodotto.getNomeProdotto());
-            System.out.println("Prezzo: " + prodotto.getPrezzoProdotto());
-            System.out.println();
         }
     }
 
@@ -241,13 +219,15 @@ class CartMenu extends Menu {
     }
 }
 
-
 class PaymentMenu extends Menu {
-    public PaymentMenu(Scanner scanner, String fullName) {
+    private Carrello cart; // Assicurati che ci sia una variabile cart di tipo Carrello
+
+    public PaymentMenu(Scanner scanner, String fullName, Carrello cart) {
         super(scanner, "Effettua Pagamento per " + fullName, List.of(
-            "Tipo di Pagamento",
-            "Conferma Pagamento"
+                "Tipo di Pagamento",
+                "Conferma Pagamento"
         ));
+        this.cart = cart; // Inizializza l'oggetto cart correttamente
     }
 
     @Override
@@ -264,18 +244,19 @@ class PaymentMenu extends Menu {
                 // Implement logic to confirm and process payment
                 double total = 0.0;
                 System.out.println("Prodotti nel carrello di " + fullName + ":");
-                for (Prodotto prodotto : cart.getProdottiNelCarrello()) {
+                List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello();
+                for (Prodotto prodotto : prodottiNelCarrello) {
                     System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
                     System.out.println("Nome: " + prodotto.getNomeProdotto());
                     System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
                     System.out.println("Tipo di pagamento: " + cart.getTipoPagamento());
                     double prezzoProdotto = prodotto.getPrezzoProdotto();
                     System.out.println("Totale parziale: " + prezzoProdotto);
-                    System.out.println();
                     total += prezzoProdotto;
+                    System.out.println();
                 }
                 System.out.println("Totale: " + total + " " + cart.getTipoPagamento());
-                // Implementa qui la logica per confermare e processare il pagamento
+                System.out.println("Pagamento confermato.");
                 break;
             default:
                 System.out.println("Scelta non valida. Riprova.");
@@ -283,4 +264,5 @@ class PaymentMenu extends Menu {
         }
     }
 }
+
 
