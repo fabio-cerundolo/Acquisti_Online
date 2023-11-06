@@ -1,5 +1,6 @@
 package com.example;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
@@ -20,8 +21,18 @@ public class Main {
             List<Prodotto> products = acquistiDAO.getAllProducts();
 
             if (!products.isEmpty()) {
+<<<<<<< HEAD
                 Stack<Menu> menuStack = new Stack<>();
                 menuStack.push(new MainMenu(scanner, products));
+=======
+                System.out.println("Prodotti disponibili:");
+                for (Prodotto prodotto : products) {
+                    System.out.printf("%-10s %-20s %-15s", "ID: " + prodotto.getIdProdotto(),
+                    "|  Nome: " + prodotto.getNomeProdotto(),
+                    "|  Prezzo: " + prodotto.getPrezzoProdotto());
+                    System.out.println();
+                }
+>>>>>>> cc24cf145f36c83de39dc1824e5ce2bc3debbeb3
 
                 while (!menuStack.isEmpty()) {
                     Menu currentMenu = menuStack.peek();
@@ -31,8 +42,20 @@ public class Main {
                         // Pop the current menu and go back
                         menuStack.pop();
                     } else {
+<<<<<<< HEAD
                         // Execute the chosen option
                         currentMenu.handleChoice(choice, menuStack, products, fullName);
+=======
+                        int selectedProductId = Integer.parseInt(userInput);
+                        Prodotto selectedProduct = findProductById(products, selectedProductId);
+
+                        if (selectedProduct != null) {
+                            carrello.aggiungiProdotto(selectedProduct);
+                            System.out.println("Prodotto " + selectedProduct.toString() + " aggiunto al carrello.");
+                        } else {
+                            System.out.println("Prodotto non trovato.");
+                        }
+>>>>>>> cc24cf145f36c83de39dc1824e5ce2bc3debbeb3
                     }
                 }
             } else {
