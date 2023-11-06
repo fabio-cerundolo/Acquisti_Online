@@ -1,61 +1,70 @@
 package com.example;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Main {
     public static void main(String[] args) {
+        try {
+            AcquistiDAO acquistiDAO = new AcquistiDAO();
+            Scanner scanner = new Scanner(System.in);
 
-        AcquistiDAO acquistiDAO = new AcquistiDAO();
-        Scanner scanner = new Scanner(System.in);
+            System.out.println("Benvenuto nel sistema di gestione acquisti online!");
 
-        System.out.println("Benvenuto nel sistema di gestione acquisti online!");
+            int clientId = getClientId(scanner, acquistiDAO);
 
-        int clientId = getClientId(scanner, acquistiDAO);
+            if (clientId != -1) {
+                String fullName = acquistiDAO.getFullNameForClientId(clientId);
+                System.out.println("Nome del cliente: " + fullName);
 
-        if (clientId != -1) {
-            String fullName = acquistiDAO.getFullNameForClientId(clientId);
-            System.out.println("Nome del cliente: " + fullName);
+                List<Prodotto> products = acquistiDAO.getAllProducts();
 
-            List<Prodotto> products = acquistiDAO.getAllProducts();
+                if (!products.isEmpty()) {
+                    Stack<Menu> menuStack = new Stack<>();
+                    menuStack.push(new MainMenu(scanner, products));
 
-            if (!products.isEmpty()) {
-                Stack<Menu> menuStack = new Stack<>();
-                menuStack.push(new MainMenu(scanner, products));
+                    while (!menuStack.isEmpty()) {
+                        Menu currentMenu = menuStack.peek();
+                        int choice = currentMenu.displayMenuAndGetChoice();
 
-                while (!menuStack.isEmpty()) {
-                    Menu currentMenu = menuStack.peek();
-                    int choice = currentMenu.displayMenuAndGetChoice();
-
-                    if (choice == 0) {
-                        // Pop the current menu and go back
-                        menuStack.pop();
-                    } else {
-                        // Execute the chosen option
-                        currentMenu.handleChoice(choice, menuStack, products, fullName);
+                        if (choice == 0) {
+                            // Pop the current menu and go back
+                            menuStack.pop();
+                        } else {
+                            // Execute the chosen option
+                            currentMenu.handleChoice(choice, menuStack, products, fullName);
+                        }
                     }
+                } else {
+                    System.out.println("Nessun prodotto disponibile.");
                 }
             } else {
-                System.out.println("Nessun prodotto disponibile.");
+                System.out.println("Cliente non trovato.");
             }
-        } else {
-            System.out.println("Cliente non trovato.");
-        }
 
-        acquistiDAO.close();
-        scanner.close();
+            acquistiDAO.close();
+            scanner.close();
+        } catch (Exception e) {
+            e.printStackTrace(); // Stampa l'eccezione o gestiscila in modo appropriato
+        }
     }
 
     private static int getClientId(Scanner scanner, AcquistiDAO acquistiDAO) {
         int clientId = -1;
-        while (clientId == -1) {
-            System.out.print("Inserisci l'ID del cliente: ");
-            clientId = scanner.nextInt();
-            if (!acquistiDAO.isValidClientId(clientId)) {
-                System.out.println("ID del cliente non valido. Riprova.");
-                clientId = -1;
+        try {
+            while (clientId == -1) {
+                System.out.print("Inserisci l'ID del cliente: ");
+                clientId = scanner.nextInt();
+                if (!acquistiDAO.isValidClientId(clientId)) {
+                    System.out.println("ID del cliente non valido. Riprova.");
+                    clientId = -1;
+                }
             }
+        } catch (InputMismatchException e) {
+            System.out.println("Input non valido. Inserisci un numero valido.");
+            scanner.next(); // Consuma l'input non valido (la lettera) per evitare un loop infinito
         }
         return clientId;
     }
@@ -110,7 +119,7 @@ class MainMenu extends Menu {
                 menuStack.push(cartMenu);
                 break;
             case 3:
-                menuStack.push(new PaymentMenu(scanner, fullName, cart));
+                menuStack.push(new PaymentMenu(scanner, fullName));
                 break;
             default:
                 System.out.println("Scelta non valida. Riprova.");
@@ -220,14 +229,11 @@ class CartMenu extends Menu {
 }
 
 class PaymentMenu extends Menu {
-    private Carrello cart; // Assicurati che ci sia una variabile cart di tipo Carrello
-
-    public PaymentMenu(Scanner scanner, String fullName, Carrello cart) {
+    public PaymentMenu(Scanner scanner, String fullName) {
         super(scanner, "Effettua Pagamento per " + fullName, List.of(
                 "Tipo di Pagamento",
                 "Conferma Pagamento"
         ));
-        this.cart = cart; // Inizializza l'oggetto cart correttamente
     }
 
     @Override
@@ -244,16 +250,16 @@ class PaymentMenu extends Menu {
                 // Implement logic to confirm and process payment
                 double total = 0.0;
                 System.out.println("Prodotti nel carrello di " + fullName + ":");
-                List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello();
-                for (Prodotto prodotto : prodottiNelCarrello) {
+                List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello(); // Recupera i prodotti nel carrello
+                for (Prodotto prodotto : prodottiNelCarrello) { // Utilizza la lista recuperata
                     System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
                     System.out.println("Nome: " + prodotto.getNomeProdotto());
                     System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
                     System.out.println("Tipo di pagamento: " + cart.getTipoPagamento());
                     double prezzoProdotto = prodotto.getPrezzoProdotto();
                     System.out.println("Totale parziale: " + prezzoProdotto);
-                    total += prezzoProdotto;
                     System.out.println();
+                    total += prezzoProdotto;
                 }
                 System.out.println("Totale: " + total + " " + cart.getTipoPagamento());
                 System.out.println("Pagamento confermato.");
@@ -264,5 +270,3 @@ class PaymentMenu extends Menu {
         }
     }
 }
-
-
