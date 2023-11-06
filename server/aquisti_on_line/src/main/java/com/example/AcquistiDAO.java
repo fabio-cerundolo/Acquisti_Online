@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class AcquistiDAO {
@@ -64,7 +65,14 @@ public class AcquistiDAO {
 		return products;
 	}
 	
-
+    public boolean isValidClientId(int clientId) {
+        // Aggiungi qui la logica per verificare se l'ID del cliente è valido
+        // Ad esempio, puoi confrontare clientId con una lista di ID clienti validi
+        // E restituire true se è valido, altrimenti false.
+        // Esempio semplice:
+        List<Integer> clientIds = Arrays.asList(1, 2, 3, 4, 5);
+        return clientIds.contains(clientId);
+    }
 
     /*public List<Acquisto> getAcquistiByClientId(int clientId) {
         // Implement logic to retrieve purchases by client ID
