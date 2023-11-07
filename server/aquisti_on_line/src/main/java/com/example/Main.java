@@ -134,21 +134,45 @@ class ProductsMenu extends Menu {
     public ProductsMenu(Scanner scanner, List<Prodotto> products) {
         super(scanner, "Visualizza Prodotti", List.of("Torna indietro"));
         this.products = products;
+        
     }
 
-    @Override
-    public int displayMenuAndGetChoice() {
-        System.out.println(title);
-        for (int i = 0; i < products.size(); i++) {
-            Prodotto product = products.get(i);
-            System.out.println((i + 1) + ". ID Prodotto: " + product.getIdProdotto());
-            System.out.println("   Nome: " + product.getNomeProdotto());
-            System.out.println("   Prezzo: " + product.getPrezzoProdotto());
-        }
-        System.out.println("0. Torna indietro");
-        System.out.print("Scelta: ");
-        return scanner.nextInt();
+@Override
+public int displayMenuAndGetChoice() {
+    System.out.println(title);
+    boolean productAdded = false; // Inizialmente nessun prodotto è stato aggiunto al carrello
+
+    for (int i = 0; i < products.size(); i++) {
+        Prodotto product = products.get(i);
+        System.out.println((i + 1) + ". ID Prodotto: " + product.getIdProdotto());
+        System.out.println("   Nome: " + product.getNomeProdotto());
+        System.out.println("   Prezzo: " + product.getPrezzoProdotto());
     }
+    System.out.println("0. Torna indietro");
+    System.out.print("Scelta: ");
+    int choice = scanner.nextInt();
+
+    if (choice == 0) {
+        // Torna indietro al menu principale
+    } else if (choice > 0 && choice <= products.size()) {
+        // L'utente ha selezionato un prodotto
+        Prodotto selectedProduct = products.get(choice - 1);
+
+        // Aggiungi il prodotto direttamente al carrello
+        cart.aggiungiProdotto(selectedProduct);
+        productAdded = true; // Imposta il flag a true
+    } else {
+        System.out.println("Scelta non valida. Riprova.");
+    }
+
+    if (productAdded) {
+        System.out.println("Prodotto aggiunto al carrello.");
+    }
+
+    return choice;
+}
+
+
 
     @Override
     public void handleChoice(int choice, Stack<Menu> menuStack, List<Prodotto> products, String fullName) {
@@ -168,6 +192,7 @@ class CartMenu extends Menu {
                 "Aggiungi Prodotto al Carrello"
         ));
         this.cart = cart;
+        
     }
 
     @Override
