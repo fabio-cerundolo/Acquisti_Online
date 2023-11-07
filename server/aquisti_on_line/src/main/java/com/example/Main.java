@@ -119,7 +119,7 @@ class MainMenu extends Menu {
                 menuStack.push(cartMenu);
                 break;
             case 3:
-                menuStack.push(new PaymentMenu(scanner, fullName));
+                menuStack.push(new PaymentMenu(scanner, fullName, cart));
                 break;
             default:
                 System.out.println("Scelta non valida. Riprova.");
@@ -229,11 +229,12 @@ class CartMenu extends Menu {
 }
 
 class PaymentMenu extends Menu {
-    public PaymentMenu(Scanner scanner, String fullName) {
+    public PaymentMenu(Scanner scanner, String fullName, Carrello cart) {
         super(scanner, "Effettua Pagamento per " + fullName, List.of(
                 "Tipo di Pagamento",
                 "Conferma Pagamento"
         ));
+        this.cart = cart;
     }
 
     @Override
@@ -250,8 +251,8 @@ class PaymentMenu extends Menu {
                 // Implement logic to confirm and process payment
                 double total = 0.0;
                 System.out.println("Prodotti nel carrello di " + fullName + ":");
-                List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello(); // Recupera i prodotti nel carrello
-                for (Prodotto prodotto : prodottiNelCarrello) { // Utilizza la lista recuperata
+                List<Prodotto> prodottiNelCarrello = cart.getProdottiNelCarrello(); // Accedi alla lista del carrello
+                for (Prodotto prodotto : prodottiNelCarrello) {
                     System.out.println("ID Prodotto: " + prodotto.getIdProdotto());
                     System.out.println("Nome: " + prodotto.getNomeProdotto());
                     System.out.println("Prezzo unitario: " + prodotto.getPrezzoProdotto());
@@ -270,3 +271,4 @@ class PaymentMenu extends Menu {
         }
     }
 }
+
